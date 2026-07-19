@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<script>
+(function(){
+  // GitHub Pages project site: /crm-demo/ ; Vercel root: /
+  var p = location.pathname;
+  var base = '/';
+  if (p.indexOf('/crm-demo') === 0) base = '/crm-demo/';
+  var b = document.createElement('base');
+  b.href = base;
+  document.head.insertBefore(b, document.head.firstChild);
+})();
+</script>
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
