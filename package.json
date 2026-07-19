@@ -1,0 +1,6 @@
+{
+  "name": "crm-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone CRM demo with fake data (portfolio showcase)"
+}
