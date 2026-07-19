@@ -25,18 +25,28 @@
     const c2 = nid('c');
     const c3 = nid('c');
     const c4 = nid('c');
+    const c5 = nid('c');
+    const c6 = nid('c');
     const o1 = nid('o');
+    const o2 = nid('o');
     const q1 = nid('q');
     const q2 = nid('q');
     const q3 = nid('q');
     const q4 = nid('q');
+    const q5 = nid('q');
+    const q6 = nid('q');
     const i1 = nid('i');
     const i2 = nid('i');
     const i3 = nid('i');
     const i4 = nid('i');
     const i5 = nid('i');
+    const i6 = nid('i');
+    const i7 = nid('i');
+    const i8 = nid('i');
     const j1 = nid('j');
     const j2 = nid('j');
+    const j3 = nid('j');
+    const j4 = nid('j');
 
     const contacts = [
       {
@@ -44,7 +54,7 @@
         phone: '0912-345-678', tel: '04-2222-1111', fax: '04-2222-1112',
         email: 'ming.wang@demo-tech.example', vatNo: '12345678',
         address: '台中市西屯區示範路 88 號', invoiceAddr: '台中市西屯區示範路 88 號',
-        deliveryAddr: '台中市西屯區工業區 12 路', website: '', notes: 'Demo 客戶 A',
+        deliveryAddr: '台中市西屯區工業區 12 路', website: '', notes: '重點客戶，產線升級中',
       },
       {
         _id: c2, company: '展新自動化有限公司', name: '陳美玲', title: '廠長',
@@ -67,6 +77,20 @@
         address: '台中市豐原區綠能巷 7 號', invoiceAddr: '台中市豐原區綠能巷 7 號',
         deliveryAddr: '台中市豐原區綠能巷 7 號', website: '', notes: '',
       },
+      {
+        _id: c5, company: '翔飛電子工業', name: '張家豪', title: '工程師',
+        phone: '0933-888-777', tel: '03-5555-1212', fax: '',
+        email: 'jh.chang@xiangfei.example', vatNo: '44556677',
+        address: '桃園市蘆竹區南崁路 200 號', invoiceAddr: '桃園市蘆竹區南崁路 200 號',
+        deliveryAddr: '桃園市蘆竹區南崁路 200 號', website: '', notes: '感測器耗材回頭客',
+      },
+      {
+        _id: c6, company: '晨光模具股份有限公司', name: '吳佩君', title: '採購',
+        phone: '0955-222-333', tel: '04-2666-8899', fax: '04-2666-8800',
+        email: 'pj.wu@chenguang.example', vatNo: '33445566',
+        address: '台中市烏日區中山路一段 66 號', invoiceAddr: '台中市烏日區中山路一段 66 號',
+        deliveryAddr: '台中市烏日區中山路一段 66 號', website: '', notes: '詢問導軌交期',
+      },
     ];
 
     const opps = [
@@ -75,6 +99,12 @@
         amount: 480000, date: todayOffset(20), company: contacts[0].company,
         vatNo: contacts[0].vatNo, tags: ['自動化', '氣壓'], notes: 'Demo 商機',
         invoiceAddr: contacts[0].invoiceAddr, deliveryAddr: contacts[0].deliveryAddr,
+      },
+      {
+        _id: o2, name: '翔飛電子｜感測器年度採購', contactId: c5, stage: '成交',
+        amount: 96000, date: todayOffset(-12), company: contacts[4].company,
+        vatNo: contacts[4].vatNo, tags: ['耗材'], notes: '',
+        invoiceAddr: contacts[4].invoiceAddr, deliveryAddr: contacts[4].deliveryAddr,
       },
     ];
 
@@ -125,6 +155,29 @@
         notes: '上月已收款示範', subtotal: 50000, tax: 2500, total: 52500,
         itemIds: [i5],
       },
+      {
+        _id: q5, id: 'DEMO-0005', oppId: o2, contactId: c5,
+        date: todayOffset(-14), deadline: todayOffset(7),
+        status: '客戶確認', payStatus: '已收款',
+        payDate: todayOffset(-7), payAmount: 50400,
+        company: contacts[4].company, contactName: contacts[4].name,
+        contactPhone: contacts[4].phone, contactFax: '', vatNo: contacts[4].vatNo,
+        invoiceAddr: contacts[4].invoiceAddr, deliveryAddr: contacts[4].deliveryAddr,
+        handler: 'Demo', handlerPhone: '0900-000-000', handlerEmail: 'demo@example.com',
+        notes: '', subtotal: 48000, tax: 2400, total: 50400,
+        itemIds: [i6, i7],
+      },
+      {
+        _id: q6, id: 'DEMO-0006', oppId: '', contactId: c6,
+        date: todayOffset(-2), deadline: todayOffset(28),
+        status: '已送出', payStatus: '未收款', payDate: '', payAmount: 0,
+        company: contacts[5].company, contactName: contacts[5].name,
+        contactPhone: contacts[5].phone, contactFax: contacts[5].fax, vatNo: contacts[5].vatNo,
+        invoiceAddr: contacts[5].invoiceAddr, deliveryAddr: contacts[5].deliveryAddr,
+        handler: 'Demo', handlerPhone: '0900-000-000', handlerEmail: 'demo@example.com',
+        notes: '交期約 3 週', subtotal: 72000, tax: 3600, total: 75600,
+        itemIds: [i8],
+      },
     ];
 
     const quoteItems = [
@@ -133,6 +186,9 @@
       { _id: i3, quoteId: q2, name: '導軌滑塊 MGN12H', unit: '組', qty: 12, price: 7000, amount: 84000, stock: '現貨' },
       { _id: i4, quoteId: q3, name: '感測器 E2B-M12', unit: 'PCS', qty: 25, price: 1400, amount: 35000, stock: '現貨' },
       { _id: i5, quoteId: q4, name: '接頭快插 PC8-02', unit: '包', qty: 50, price: 1000, amount: 50000, stock: '現貨' },
+      { _id: i6, quoteId: q5, name: '光電感測器 E3Z-D61', unit: 'PCS', qty: 30, price: 800, amount: 24000, stock: '現貨' },
+      { _id: i7, quoteId: q5, name: '近接開關 TL-Q5MC1', unit: 'PCS', qty: 40, price: 600, amount: 24000, stock: '現貨' },
+      { _id: i8, quoteId: q6, name: '線性滑軌 HGH20CA', unit: '組', qty: 8, price: 9000, amount: 72000, stock: '期貨' },
     ];
 
     const journals = [
@@ -148,11 +204,23 @@
         natures: ['售後'], content: '確認導軌到貨與安裝狀況，客戶表示運作正常。',
         nextFocus: '下季耗材需求', status: '已完成', oppId: '',
       },
+      {
+        _id: j3, contactId: c5, company: contacts[4].company, contactName: contacts[4].name,
+        contactPhone: contacts[4].phone, createdAt: todayOffset(-10), nextVisit: todayOffset(20),
+        natures: ['電話追蹤'], content: '年度感測器採購已確認收款，客戶詢問下一季備料節奏。',
+        nextFocus: '整理耗材清單給對方', status: '進行中', oppId: o2,
+      },
+      {
+        _id: j4, contactId: c6, company: contacts[5].company, contactName: contacts[5].name,
+        contactPhone: contacts[5].phone, createdAt: todayOffset(-1), nextVisit: todayOffset(7),
+        natures: ['拜訪', '報價說明'], content: '現場丈量機台空間，送出 DEMO-0006 導軌報價。',
+        nextFocus: '等對方確認圖面', status: '待回覆', oppId: '',
+      },
     ];
 
     return {
       contacts, opps, quotes, journals, quoteItems,
-      tags: { options: ['自動化', '氣壓', '耗材'] },
+      tags: { options: ['自動化', '氣壓', '耗材', '模具'] },
       visitNatures: { options: ['拜訪', '報價說明', '售後', '電話追蹤'] },
       journalStatuses: { options: ['進行中', '已完成', '待回覆'] },
     };
@@ -351,21 +419,37 @@
     throw new Error('Unknown demo action: ' + action);
   }
 
-  function showBanner() {
+  function updateBanner(canEdit) {
     let el = document.getElementById('demo-banner');
     if (!el) {
       el = document.createElement('div');
       el.id = 'demo-banner';
-      el.innerHTML = 'DEMO 展示站 · 假資料，僅供作品集／業務示範';
       document.body.appendChild(el);
+    }
+    if (canEdit) {
+      el.classList.add('edit-on');
+      el.innerHTML = '編輯模式已解鎖 · 可新增／修改／刪除假資料　<button type="button" id="demo-lock-btn">回到預覽</button>';
+    } else {
+      el.classList.remove('edit-on');
+      el.innerHTML = '預覽模式 · 假資料僅供瀏覽　<button type="button" id="demo-unlock-btn">管理員解鎖</button>';
     }
     el.style.display = 'block';
     document.body.classList.add('demo-mode');
+    document.getElementById('demo-unlock-btn')?.addEventListener('click', () => {
+      if (typeof global.openUnlockModal === 'function') global.openUnlockModal();
+    });
+    document.getElementById('demo-lock-btn')?.addEventListener('click', () => {
+      if (typeof global.lockToPreview === 'function') global.lockToPreview();
+    });
+  }
+
+  function showBanner(canEdit) {
+    updateBanner(!!canEdit);
   }
 
   function resetStore() { store = buildSeed(); }
 
   global.GkCrmDemo = {
-    ensureStore, resetStore, demoFetch, demoPost, showBanner,
+    ensureStore, resetStore, demoFetch, demoPost, showBanner, updateBanner,
   };
 })(window);

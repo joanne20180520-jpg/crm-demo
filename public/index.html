@@ -25,10 +25,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="theme-color" content="#FFFFFF"/>
 <meta name="mobile-web-app-capable" content="yes"/>
-<link rel="manifest" href="/manifest.webmanifest"/>
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2"/>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2"/>
-<link rel="icon" href="/favicon.ico?v=2"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2"/>
+<link rel="icon" href="favicon.ico?v=2"/>
 <style>
 /* ── Design tokens ─────────────────────────────────────────────── */
 :root{
@@ -161,7 +161,7 @@ button,a,.tbl-action,.filter-chip,.tb-btn,.fm-btn,.nav-item{-webkit-tap-highligh
   font-size:18px;font-weight:600;letter-spacing:1.6px;
   color:#fff;line-height:1;padding-top:1px;
 }
-.logo-sub{display:none;}
+.logo-sub{display:block;font-size:10px;color:rgba(255,255,255,.55);letter-spacing:1.2px;margin-top:4px;}
 
 .nav-section{padding:10px 10px;position:relative;}
 .nav-label{font-size:9.5px;color:rgba(255,255,255,.4);letter-spacing:1.8px;text-transform:uppercase;
@@ -912,6 +912,31 @@ tr.tbl-row.selected td{background:#EEF1F8;}
 }
 body.demo-mode #shell{padding-top:36px;}
 body.demo-mode #login-screen{padding-top:36px;}
+
+body.preview-mode .owner-only{display:none !important;}
+body.preview-mode .tbl-action.owner-only{display:none !important;}
+#demo-banner button{
+  margin-left:10px;border:1px solid rgba(255,255,255,.55);background:transparent;
+  color:#fff;border-radius:4px;padding:2px 10px;font-size:12px;font-weight:600;cursor:pointer;
+}
+#demo-banner.edit-on{background:#1A6B47;}
+#unlock-overlay{
+  display:none;position:fixed;inset:0;z-index:10001;background:rgba(27,45,94,.45);
+  align-items:center;justify-content:center;
+}
+#unlock-overlay.open{display:flex;}
+#unlock-card{
+  background:#fff;border-radius:12px;padding:22px 24px;width:min(360px,92vw);
+  box-shadow:0 12px 40px rgba(27,45,94,.25);
+}
+#unlock-card h3{font-size:16px;margin-bottom:6px;color:var(--navy);}
+#unlock-card p{font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.5;}
+#unlock-card input{
+  width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;
+  margin-bottom:10px;font-size:14px;
+}
+#unlock-err{color:var(--danger);font-size:12.5px;min-height:18px;margin-bottom:8px;}
+
 @media(max-width:768px){
   body.demo-mode #shell{padding-top:52px;}
 }
@@ -923,7 +948,6 @@ body.demo-mode #login-screen{padding-top:36px;}
 <div id="login-screen">
   <div class="login-card">
     <div class="login-brand">
-      <div class="logo-hex"><img src="/gk-brand-logo.png?v=4" alt="GK"/></div>
       <div>
         <div class="login-title">CRM Demo</div>
         <div class="login-sub">獨立展示站（假資料）</div>
@@ -946,15 +970,29 @@ body.demo-mode #login-screen{padding-top:36px;}
   </div>
 </div>
 
+
+<div id="unlock-overlay" onclick="if(event.target===this)closeUnlockModal()">
+  <div id="unlock-card" onclick="event.stopPropagation()">
+    <h3>管理員解鎖編輯</h3>
+    <p>訪客僅能預覽。輸入編輯密碼後，此瀏覽器可新增／修改／刪除假資料。</p>
+    <input id="unlock-pass" type="password" placeholder="編輯密碼" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')submitUnlock()"/>
+    <div id="unlock-err"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button type="button" class="fm-btn" onclick="closeUnlockModal()">取消</button>
+      <button type="button" class="fm-btn primary" onclick="submitUnlock()">解鎖</button>
+    </div>
+  </div>
+</div>
+
 <div id="shell">
 
   <!-- ── Sidebar ── -->
   <aside id="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-hex"><img src="/gk-brand-logo.png?v=4" alt="GK"/></div>
       <div>
-        <div class="logo-text">CRM</div>
-        <div class="logo-sub">AUTOMATION MACHINERY</div>
+        <div class="logo-text">CRM Demo</div>
+        <div class="logo-sub">PORTFOLIO SHOWCASE</div>
       </div>
     </div>
     <div class="nav-section">
@@ -981,7 +1019,7 @@ body.demo-mode #login-screen{padding-top:36px;}
       <div class="mini-stat"><span class="ms-label">進行中報價</span><span class="ms-val mono">3</span></div>
       <div class="mini-stat"><span class="ms-label">本月營業額</span><span class="ms-val mono">$2,840,000</span></div>
       <div class="mini-stat"><span class="ms-label">未收款</span><span class="ms-val mono" style="color:var(--danger)">$680,000</span></div>
-      <button class="logout-btn" onclick="doLogout()">重置 Demo</button>
+      <button class="logout-btn owner-only" onclick="doLogout()">重置 Demo</button>
     </div>
   </aside>
 
@@ -996,7 +1034,7 @@ body.demo-mode #login-screen{padding-top:36px;}
         <input type="text" id="globalSearch" placeholder="搜尋…" oninput="handleSearch()"/>
       </div>
       <div class="topbar-actions">
-        <button class="tb-btn primary" onclick="handleAdd()">＋ 新增</button>
+        <button class="tb-btn primary owner-only" onclick="handleAdd()">＋ 新增</button>
         <div class="tb-icon" title="通知">🔔</div>
       </div>
     </div>
@@ -1205,7 +1243,7 @@ body.demo-mode #login-screen{padding-top:36px;}
   </div>
 </div>
 
-<script src="/demo.js"></script>
+<script src="demo.js"></script>
 <script>
 // ── API & Data ────────────────────────────────────────────────────
 const API = '/api/lark';
@@ -1214,11 +1252,72 @@ let contacts = [], opps = [], quotes = [], journals = [], quoteItemsMap = {};
 let loading = false;
 let currentUser = null;
 
+// ── Preview / Owner edit gate ─────────────────────────────────────
+const EDIT_SESSION_KEY = 'crmDemoEditUnlocked';
+const EDIT_PASS_HASH = '20b1b19cf539c0d21115beb1bac72a792e09ce77c23e3651e67acd62d80743fa'; // demo-edit-2026
+
+function isEditUnlocked(){
+  try{ return sessionStorage.getItem(EDIT_SESSION_KEY) === '1'; }catch(e){ return false; }
+}
+
+async function sha256Hex(text){
+  const data = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function applyPreviewMode(){
+  const canEdit = isEditUnlocked();
+  document.body.classList.toggle('preview-mode', !canEdit);
+  document.body.classList.toggle('edit-unlocked', canEdit);
+  if (window.GkCrmDemo?.updateBanner) window.GkCrmDemo.updateBanner(canEdit);
+}
+
+function openUnlockModal(){
+  const ov = document.getElementById('unlock-overlay');
+  const err = document.getElementById('unlock-err');
+  const inp = document.getElementById('unlock-pass');
+  if (err) err.textContent = '';
+  if (inp) inp.value = '';
+  if (ov) ov.classList.add('open');
+  setTimeout(()=>inp?.focus(), 50);
+}
+function closeUnlockModal(){
+  document.getElementById('unlock-overlay')?.classList.remove('open');
+}
+async function submitUnlock(){
+  const pw = document.getElementById('unlock-pass')?.value || '';
+  const err = document.getElementById('unlock-err');
+  if (!pw){ if(err) err.textContent='請輸入密碼'; return; }
+  const hash = await sha256Hex(pw);
+  if (hash !== EDIT_PASS_HASH){
+    if(err) err.textContent='密碼錯誤';
+    return;
+  }
+  try{ sessionStorage.setItem(EDIT_SESSION_KEY, '1'); }catch(e){}
+  closeUnlockModal();
+  applyPreviewMode();
+  showToast('已解鎖編輯模式');
+}
+function lockToPreview(){
+  try{ sessionStorage.removeItem(EDIT_SESSION_KEY); }catch(e){}
+  applyPreviewMode();
+  showToast('已回到預覽模式');
+}
+function requireEdit(actionLabel){
+  if (isEditUnlocked()) return true;
+  showToast('預覽模式無法' + (actionLabel || '修改') + ' · 請先解鎖');
+  openUnlockModal();
+  return false;
+}
+
+
 async function apiFetch(resource, params = {}) {
   return window.GkCrmDemo.demoFetch(resource, params);
 }
 
 async function apiPost(resource, action, body) {
+  if (!isEditUnlocked()) throw new Error('預覽模式無法修改資料');
   return window.GkCrmDemo.demoPost(resource, action, body || {});
 }
 
@@ -1262,12 +1361,19 @@ function saveLoginLocal(username, password, remember){
 }
 
 async function checkAuth(){
-  // 獨立 Demo 站：不連正式後端，直接進入假資料
+  // 獨立 Demo 站：假資料；預設預覽，解鎖後可編輯
   if (window.GkCrmDemo) {
     window.GkCrmDemo.resetStore();
-    window.GkCrmDemo.showBanner();
+    window.GkCrmDemo.showBanner(isEditUnlocked());
   }
   showApp({ username: 'demo', displayName: 'Demo' });
+  applyPreviewMode();
+  // ?edit=1 開啟解鎖框
+  try{
+    if (new URLSearchParams(location.search).get('edit') === '1' && !isEditUnlocked()) {
+      setTimeout(openUnlockModal, 300);
+    }
+  }catch(e){}
   return true;
 }
 
@@ -1308,6 +1414,7 @@ async function doLogin(silent){
 }
 
 async function doLogout(){
+  if (!requireEdit('重置')) return;
   // Demo 站：重置假資料並重新進入
   contacts=[]; opps=[]; quotes=[]; journals=[]; quoteItemsMap={}; allQuoteItems=[];
   try{ localStorage.removeItem(DATA_CACHE_KEY); }catch(e){}
@@ -1811,6 +1918,7 @@ function goPage(page) {
 }
 
 function handleAdd(){
+  if(!requireEdit('新增')) return;
   if(currentPage==='contacts') openAddContactModal();
   else if(currentPage==='journals') openAddJournalModal(null,null);
   else if(currentPage==='quotes') showToast('請到聯繫人，點「＋ 報價單」建立');
@@ -1855,6 +1963,7 @@ function contactLabel(c){
 }
 
 function openAddOppModal(contactId, contactName, editId){
+  if(!requireEdit('編輯商機')) return;
   const o = editId ? getO(editId) : null;
   document.getElementById('of-edit-id').value = editId || '';
   document.getElementById('of-name').value = o ? (o.name||'') : '';
@@ -2018,6 +2127,7 @@ async function submitOppForm(){
 }
 
 function openAddContactModal(editId){
+  if(!requireEdit('編輯聯繫人')) return;
   const c = editId ? getC(editId) : null;
   document.getElementById('cf-edit-id').value = editId || '';
   const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.value=v||''; };
@@ -2489,6 +2599,7 @@ function fillJournalOppOptions(contactId, selectedOppId){
 }
 
 function openAddJournalModal(contactId, contactName, editId){
+  if(!requireEdit('編輯日報')) return;
   const j = editId ? getJ(editId) : null;
   document.getElementById('jf-edit-id').value = editId || '';
   document.getElementById('journal-form-title').textContent = editId ? '編輯日報' : '新增日報';
@@ -2640,6 +2751,7 @@ async function submitJournalForm(){
 // ── 新增報價單 ──────────────────────────────────────────────────────
 /** @param {string|null} oppId @param {string|null} editId @param {string|null} contactId */
 async function openAddQuoteModal(oppId, editId, contactId){
+  if(!requireEdit('編輯報價單')) return;
   const q = editId ? quotes.find(x=>x._id===editId) : null;
   let o = {}, c = {};
   if(q){
@@ -2727,6 +2839,7 @@ async function openAddQuoteModal(oppId, editId, contactId){
 }
 
 function openAddQuoteFromContact(contactId){
+  if(!requireEdit('建立報價單')) return;
   if(!contactId){ showToast('缺少聯繫人'); return; }
   openAddQuoteModal(null, null, contactId);
 }
@@ -3167,6 +3280,7 @@ function selectContact(id, label){
 
 // ── 刪除功能（5秒可復原）────────────────────────────────────────────
 async function deleteRecord(resource, recordId, displayName){
+  if(!requireEdit('刪除')) return;
   const ok = await askConfirm('確定刪除？');
   if(!ok) return;
   // 樂觀刪除：先從畫面移除
@@ -3626,8 +3740,8 @@ function renderContacts(searchOverride){
       <td class="td-email" data-col="email">${c.email||"—"}</td>
       <td class="td-actions" data-col="actions">
         <div class="td-actions-inner">
-          <button class="tbl-action" onclick="event.stopPropagation();openAddQuoteFromContact('${c._id}')">＋ 報價單</button>
-          <button class="tbl-action" onclick="event.stopPropagation();addJournal('${c._id}')">＋ 日報</button>
+          <button class="tbl-action owner-only" onclick="event.stopPropagation();openAddQuoteFromContact('${c._id}')">＋ 報價單</button>
+          <button class="owner-only tbl-action" onclick="event.stopPropagation();addJournal('${c._id}')">＋ 日報</button>
           <button class="tbl-action" onclick="event.stopPropagation();${c.phone?`window.location='tel:${c.phone}'`:`showToast('此聯繫人尚未填寫手機')`}">📞</button>
         </div>
       </td>
@@ -3657,7 +3771,7 @@ function openContact(id){
         <div><div class="dp-name">${c.name||'—'}</div><div class="dp-sub">${c.title||""}</div></div>
       </div>
       <div class="dp-header-actions">
-        <button class="dp-edit-btn" onclick="openAddContactModal('${c._id}')">✎ 編輯</button>
+        <button class="dp-edit-btn owner-only" onclick="openAddContactModal('${c._id}')">✎ 編輯</button>
         <button class="dp-close" onclick="closeContactDetail()">✕</button>
       </div>
     </div>
@@ -3702,10 +3816,10 @@ function openContact(id){
       ${c.notes?`<div class="dp-section"><div class="dp-section-title">備註</div><div style="font-size:12.5px;color:var(--text2);">${c.notes}</div></div>`:''}
     </div>
     <div class="dp-actions">
-      <button class="dp-btn primary" onclick="openAddQuoteFromContact('${c._id}')">＋ 報價單</button>
-      <button class="dp-btn" onclick="addJournal('${c._id}','${(c.name||'').replace(/'/g,'')}')">＋ 日報</button>
+      <button class="dp-btn primary owner-only" onclick="openAddQuoteFromContact('${c._id}')">＋ 報價單</button>
+      <button class="owner-only dp-btn" onclick="addJournal('${c._id}','${(c.name||'').replace(/'/g,'')}')">＋ 日報</button>
       ${c.phone?`<button class="dp-btn" onclick="window.location='tel:${c.phone}'">📞</button>`:''}
-      <button class="dp-btn danger" onclick="deleteRecord('contacts','${c._id}','${(c.name||'').replace(/'/g,'')}')">🗑</button>
+      <button class="dp-btn danger owner-only" onclick="deleteRecord('contacts','${c._id}','${(c.name||'').replace(/'/g,'')}')">🗑</button>
     </div>`;
   renderContacts();
 }
@@ -3934,8 +4048,8 @@ function journalReportRowHtml(j, dayItems, forceExpandAll){
       ${opp&&opp.name?`<div class="report-detail-meta">商機：${opp.name}</div>`:''}
       ${j.status?`<div class="report-detail-meta">狀態：${j.status}</div>`:''}
       <div class="report-detail-actions">
-        <button type="button" class="tbl-action" onclick="event.stopPropagation();openAddJournalModal(null,null,'${safeId}')">✎ 編輯</button>
-        <button type="button" class="tbl-action" onclick="event.stopPropagation();deleteRecord('journals','${safeId}','日報 ${j.createdAt||''}')">🗑 刪除</button>
+        <button type="button" class="tbl-action owner-only" onclick="event.stopPropagation();openAddJournalModal(null,null,'${safeId}')">✎ 編輯</button>
+        <button type="button" class="tbl-action owner-only" onclick="event.stopPropagation();deleteRecord('journals','${safeId}','日報 ${j.createdAt||''}')">🗑 刪除</button>
       </div>
     </div>
   </div>`;
@@ -4187,7 +4301,7 @@ function openOppDetail(id){
         </div>
       </div>
       <div class="dp-header-actions">
-        <button class="dp-edit-btn" onclick="openAddOppModal(null,null,'${o._id}')">✎ 編輯</button>
+        <button class="dp-edit-btn owner-only" onclick="openAddOppModal(null,null,'${o._id}')">✎ 編輯</button>
         <button class="dp-close" onclick="closeOppDetail()">✕</button>
       </div>
     </div>
@@ -4359,7 +4473,7 @@ async function openQuote(id){
       <div style="display:flex;width:100%;justify-content:space-between;align-items:flex-start;">
         <div><div class="qd-id">${displayQuoteId(q)}</div><div class="qd-co">${c.company||""} · ${c.name||""}</div></div>
         <div class="dp-header-actions">
-          <button class="dp-edit-btn" onclick="openEditQuoteModal('${q._id}')">✎ 編輯</button>
+          <button class="dp-edit-btn owner-only" onclick="openEditQuoteModal('${q._id}')">✎ 編輯</button>
           <button class="dp-close" onclick="closeQuoteDetail()">✕</button>
         </div>
       </div>
@@ -4415,7 +4529,7 @@ async function openQuote(id){
     </div>
     <div class="dp-actions" style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;">
       <button class="dp-btn primary" onclick="printQuote('${q._id}')" style="background:var(--success-dim);color:var(--success);border-color:var(--success);">🖨️ 列印</button>
-      <button class="dp-btn danger" onclick="deleteRecord('quotes','${q._id}','${displayQuoteId(q)}')">🗑</button>
+      <button class="dp-btn danger owner-only" onclick="deleteRecord('quotes','${q._id}','${displayQuoteId(q)}')">🗑</button>
     </div>
   `;
   renderQuotes();
@@ -4511,7 +4625,7 @@ async function printQuote(id){
   document.getElementById("print-content").innerHTML=`
     <div class="print-sheet">
     <div class="print-header" style="display:flex;align-items:flex-start;gap:14px;margin-bottom:6px;">
-      <img src="/gk-logo.png" alt="GK" style="width:118px;height:auto;flex:none;display:block;object-fit:contain;border-radius:4px;"/>
+      <div style="width:118px;flex:none;background:#1a3c8c;color:#fff;font-weight:800;font-size:18px;letter-spacing:1px;text-align:center;padding:18px 8px;border-radius:4px;">CRM<br>Demo</div>
       <div>
         <div style="font-size:22px;font-weight:900;color:#1a3c8c;letter-spacing:2px;margin-bottom:3px;">Demo自動化機械有限公司</div>
         <div style="font-size:10.5px;line-height:1.7;color:#222;">
